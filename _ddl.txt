@@ -1,0 +1,34 @@
+-- public.accesstokens definition
+
+-- Drop table
+
+-- DROP TABLE accesstokens;
+
+CREATE TABLE accesstokens ( athleteid int4 NOT NULL, accesstoken varchar(40) NOT NULL, expiresat int4 NOT NULL, CONSTRAINT accesstokens_pk PRIMARY KEY (athleteid));
+
+
+-- public.athletes definition
+
+-- Drop table
+
+-- DROP TABLE athletes;
+
+CREATE TABLE athletes ( athleteid int4 NOT NULL, firstname varchar(30) NOT NULL, lastname varchar(30) NOT NULL, profile varchar(150) NOT NULL, enabled bool NOT NULL, anual_strava numeric(10, 1) NOT NULL, CONSTRAINT athletes_pk PRIMARY KEY (athleteid));
+
+
+-- public.refreshtokens definition
+
+-- Drop table
+
+-- DROP TABLE refreshtokens;
+
+CREATE TABLE refreshtokens ( athleteid int4 NOT NULL, refreshtoken varchar(40) NOT NULL, CONSTRAINT refreshtokens_pk PRIMARY KEY (athleteid));
+
+
+-- public.activities definition
+
+-- Drop table
+
+-- DROP TABLE activities;
+
+CREATE TABLE activities ( activityid int8 NOT NULL, athleteid int4 NOT NULL, distance numeric(10, 1) NOT NULL, sporttype varchar NOT NULL, "name" varchar NOT NULL, mtime int4 DEFAULT 0 NOT NULL, etime int4 DEFAULT 0 NOT NULL, manual bool DEFAULT false NOT NULL, flagged bool DEFAULT false NOT NULL, minlat int8 DEFAULT 0 NOT NULL, maxlat int8 DEFAULT 0 NOT NULL, minlng int8 DEFAULT 0 NOT NULL, maxlng int8 DEFAULT 0 NOT NULL, brzn bool DEFAULT false NOT NULL, deleted bool DEFAULT false NOT NULL, "date" timestamp NOT NULL, CONSTRAINT activities_pk PRIMARY KEY (activityid), CONSTRAINT activities_fk FOREIGN KEY (athleteid) REFERENCES athletes(athleteid));
