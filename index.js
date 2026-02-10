@@ -6,6 +6,7 @@ import {
 	dbReadAccessToken,
 	dbReadAthletes,
 	dbReadRefreshToken,
+	dbReadRanking,
 	dbSaveActivity,
 	dbSaveAthlete,
 	dbSaveAuthorization,
