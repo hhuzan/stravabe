@@ -185,14 +185,6 @@ app.post("/webhook", async (req, res, next) => {
 	console.log("webhook START");
 	const inicio = Date.now();
 	console.log(req.body);
-	console.log("webhook END: ", Date.now() - inicio, "ms");
-	res.end();
-});
-
-app.post("/webhook_", async (req, res, next) => {
-	console.log("webhook START");
-	const inicio = Date.now();
-	console.log(req.body);
 
 	try {
 		const object_type = req.body.object_type;
