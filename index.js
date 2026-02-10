@@ -271,4 +271,14 @@ app.get("/save/:id", async (req, res, next) => {
 	}
 });
 
+// for testing
+app.get("/ranking", async (req, res, next) => {
+	try {
+		const data = await dbReadRanking();
+		res.json(data);
+	} catch (err) {
+		next(err);
+	}
+});
+
 app.listen(80, () => console.log("BRZN Server is listening on port 80"));
