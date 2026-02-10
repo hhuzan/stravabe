@@ -72,7 +72,7 @@ export const dbSaveActivity = async (act) => {
 			dec.maxlat,
 			dec.minlng,
 			dec.maxlng,
-		]
+		],
 	);
 
 	console.log("dbSaveActivity END: " + (Date.now() - inicio) + "ms");
@@ -87,7 +87,7 @@ export const dbSaveAthlete = async (athlete, stats) => {
              VALUES ($1, $2, $3, $4, true, $5)
              ON CONFLICT (athleteid) DO UPDATE
              SET firstname = $2, lastname = $3, profile = $4, anual_strava = $5 `,
-		[athlete.id, athlete.firstname, athlete.lastname, athlete.profile, stats.ytd_ride_totals.distance]
+		[athlete.id, athlete.firstname, athlete.lastname, athlete.profile, stats.ytd_ride_totals.distance],
 	);
 
 	console.log("dbSaveAthlete END: " + (Date.now() - inicio) + "ms");
@@ -100,7 +100,7 @@ export const dbReadRefreshToken = async (athleteID) => {
 	const res = await pool.query(
 		`SELECT refreshtoken
         FROM refreshtokens
-        WHERE athleteid = ${athleteID}`
+        WHERE athleteid = ${athleteID}`,
 	);
 
 	console.log("dbReadRefrehsToken END: " + (Date.now() - inicio) + "ms");
@@ -115,13 +115,13 @@ export const dbSaveAuthorization = async (aut) => {
 		`INSERT INTO refreshtokens (athleteid, refreshtoken)  
              VALUES ($1, $2) ON CONFLICT (athleteid) DO UPDATE 
              SET refreshtoken = $2 `,
-		[aut.athlete.id, aut.refresh_token]
+		[aut.athlete.id, aut.refresh_token],
 	);
 	await pool.query(
 		`INSERT INTO accesstokens (athleteid, accesstoken, expiresat)  
              VALUES ($1, $2, $3) ON CONFLICT (athleteid) DO UPDATE 
              SET accesstoken = $2, expiresat = $3 `,
-		[aut.athlete.id, aut.access_token, aut.expires_at]
+		[aut.athlete.id, aut.access_token, aut.expires_at],
 	);
 
 	console.log("dbSaveAuthorization END: " + (Date.now() - inicio) + "ms");
@@ -134,12 +134,12 @@ export const dbUpdateAuthorization = async (athleteid, aut) => {
 	await pool.query(
 		`UPDATE refreshtokens SET refreshtoken = $2  
                 WHERE athleteid = $1`,
-		[athleteid, aut.refresh_token]
+		[athleteid, aut.refresh_token],
 	);
 	await pool.query(
 		`UPDATE accesstokens SET accesstoken = $2 , expiresat = $3 
                 WHERE athleteid = $1`,
-		[athleteid, aut.access_token, aut.expires_at]
+		[athleteid, aut.access_token, aut.expires_at],
 	);
 
 	console.log("dbUpdateAuthorization END: " + (Date.now() - inicio) + "ms");
@@ -161,7 +161,7 @@ export const dbReadActivities = async (athleteid) => {
         )
 		AND deleted = FALSE
         ORDER BY date DESC `,
-		[athleteid]
+		[athleteid],
 	);
 
 	console.log("dbReadActivities END: " + (Date.now() - inicio) + "ms");
@@ -185,7 +185,7 @@ export const dbReadNovedades = async () => {
             )
 			AND deleted = FALSE
             ORDER BY date DESC
-            LIMIT 50 `
+            LIMIT 50 `,
 	);
 
 	console.log("dbReadNovedades END: " + (Date.now() - inicio) + "ms");
@@ -199,14 +199,32 @@ export const dbReadAthletes = async () => {
 	const res = await pool.query(
 		`SELECT profile, firstname, lastname, athleteid
         FROM athletes
-        ORDER BY firstname, lastname `
+        ORDER BY firstname, lastname `,
 	);
 
 	console.log("dbReadAthletes END: " + (Date.now() - inicio) + "ms");
 	return res.rows;
 };
 
+// Versión Simple
 export const dbReadRanking = async () => {
+	console.log("dbReadRanking START");
+	const inicio = Date.now();
+
+	const res = await pool.query(`
+		SELECT at.firstname , at.lastname , SUM(ac.distance ) AS distance
+		FROM athletes at 
+		JOIN activities ac ON at.athleteid = ac.athleteid
+		GROUP BY at.firstname , at.lastname
+		ORDER BY distance DESC
+		`);
+
+	console.log("dbReadRanking END: " + (Date.now() - inicio) + "ms");
+	return res.rows;
+};
+
+// Versión BR 2025
+export const _dbReadRanking = async () => {
 	console.log("dbReadRanking START");
 	const inicio = Date.now();
 
@@ -287,7 +305,7 @@ export const dbReadMonthlyRanking = async () => {
 			AND deleted = FALSE
 		WHERE enabled IS TRUE
 		GROUP BY athletes.athleteid, firstname, lastname, profile
-		ORDER BY distance DESC, firstname, lastname; `
+		ORDER BY distance DESC, firstname, lastname; `,
 	);
 
 	console.log("dbReadMonthlyRanking END: " + (Date.now() - inicio) + "ms");
@@ -335,7 +353,7 @@ export const dbReadAccessToken = async (athleteID) => {
 	const res = await pool.query(
 		`SELECT accesstoken, expiresat
             FROM accesstokens
-            WHERE athleteid = ${athleteID}`
+            WHERE athleteid = ${athleteID}`,
 	);
 
 	console.log("dbReadAccessToken END: " + (Date.now() - inicio) + "ms");

@@ -272,6 +272,11 @@ app.get("/save/:id", async (req, res, next) => {
 });
 
 // for testing
+app.get("/hola", (req, res) => {
+	res.send("¡Hola! 👋 Bienvenido a la API");
+});
+
+// for testing
 app.get("/ranking", async (req, res, next) => {
 	try {
 		const data = await dbReadRanking();
