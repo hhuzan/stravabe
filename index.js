@@ -14,7 +14,7 @@ import {
 } from "./db.js";
 import path from "path";
 import { fileURLToPath } from "url";
-import { fbSave, fbSaveXXXX, fbSavePolyline } from "./firebase.js";
+// import { fbSave, fbSaveXXXX, fbSavePolyline } from "./firebase.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, "front")));
 const saveActivities = async (activities) => {
 	await activities.forEach(async (activity) => {
 		await dbSaveActivity(activity);
-		await fbSavePolyline(activity);
+		// await fbSavePolyline(activity);
 	});
 };
 
@@ -86,11 +86,11 @@ const processActivity = async (athleteID, activityID) => {
 		const activity = await res[0].json();
 		if (activity.start_date_local.substring(0, 4) === "2025") {
 			await Promise.all([dbSaveActivity(activity), dbSaveAthlete(res[1], res[2])]);
-			await fbSaveXXXX(activity);
+			// await fbSaveXXXX(activity);
 		}
 	} else {
 		await Promise.all([dbDeleteActivity(activityID), dbSaveAthlete(res[1], res[2])]);
-		await fbSave(athleteID);
+		// await fbSave(athleteID);
 		//TODO borrar polyline
 	}
 
@@ -104,7 +104,7 @@ const deleteActivity = async (athleteID, activityID) => {
 	const accessToken = await getAccessToken(athleteID);
 	const res = await Promise.all([getAthlete(accessToken), getAthleteStats(accessToken, athleteID)]);
 	await Promise.all([dbDeleteActivity(activityID), dbSaveAthlete(res[0], res[1])]);
-	await fbSave(athleteID);
+	// await fbSave(athleteID);
 	//TODO borrar polyline
 
 	console.log("deleteActivity END: ", Date.now() - inicio, "ms");
@@ -264,7 +264,7 @@ app.get("/reset/:id", async (req, res, next) => {
 // TODO: use local time zone
 app.get("/save/:id", async (req, res, next) => {
 	try {
-		await fbSave(req.params.id);
+		// await fbSave(req.params.id);
 		res.send("ok");
 	} catch (err) {
 		next(err);
